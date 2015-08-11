@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 代码生成器的配置文件，这里面主要配置如下几个信息： 
+    1.eclipse工作目录 
+    2.要生成代码的数据库表名 
+    3.生成代码所在模块 
+    4.要生成的文件，可选有：controller,service,dao,entity,view,test，这里面可选参数：是否覆盖存在文件 -->
+
+<codegen>
+    <!-- 工作目录 -->
+	<workspace>
+	    C:\workspace_current
+	</workspace>
+	
+	<!-- 生成代码所在模块 -->
+	<module>
+	    system
+	</module>
+	
+	<files>
+	    <!-- key为数据库表名，override代表如果覆盖掉原来的文件，value指定需要生成的文件 -->
+	    <file key="sys_user" override="true" value="controller,service,dao,entity,test,view">
+	    </file>
+	    
+	    <file key="sys_role" override="true" value="controller,service,dao,entity,test,view">
+	    </file>
+	    
+	    <file key="sys_resource" override="true" value="controller,service,dao,entity,test,view">
+	    </file>
+	    
+	</files>
+</codegen>
