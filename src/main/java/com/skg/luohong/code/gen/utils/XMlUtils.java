@@ -327,6 +327,13 @@ public class XMlUtils {
 		return module.getTextTrim();
 	}
 	
+	public static String getSystem(){
+		Document doc = read("src/main/resources/conf/codegen.xml");
+		Element root = getRootElement(doc);
+		Element system = root.element("system");
+		return system.getTextTrim();
+	}
+	
 	/**
 	 * 获取要生成表的信息
 	 * */
@@ -357,6 +364,7 @@ public class XMlUtils {
 	 * 信使对象
 	 * */
 	public static class GenFile{
+		
 		public final String key;
         public final boolean override;
 		public final List<String> genOptions;

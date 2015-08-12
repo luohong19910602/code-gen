@@ -141,7 +141,7 @@ public class JdbcUtils {
 	 * @param tableName
 	 * @throws SQLException 
 	 * */
-	public static List<String> tableInfo(String tableName) throws SQLException{
+	public static List<String> columns(String tableName) throws SQLException{
 		DatabaseMetaData dbmd = getConnection().getMetaData();
 		ResultSet tableRet = dbmd.getTables(null, "%", tableName,new String[]{"TABLE"}); 
         		
@@ -167,6 +167,6 @@ public class JdbcUtils {
 	}
 
 	public static void main(String[] args) throws SQLException {
-		System.out.println(tableInfo("sys_user"));
+		System.out.println(columns("sys_user"));
 	}
 }
