@@ -150,10 +150,6 @@ public class FreemarkGenCode implements IGenCode {
 		
 	}
 
-	public static void main(String[] args) throws SQLException {
-		new FreemarkGenCode().genCode();
-	}
-	
 	public static class Field{
 		public final String name;
 		public final String type;
