@@ -25,5 +25,14 @@ package com.skg.luohong.code.gen.template;
  * @date 2015-08-11 21:43
  * */
 public interface IGenCode {
+	/**
+	 * 初始化，提供必要的初始化信息，比如：代码生成器所在的路径
+	 * init方法必须保证在genCode前调用
+	 * */
+	public void init();
+	
+	/**
+	 * 根据源信息来完成代码生成器
+	 * */
 	public void genCode();
 }

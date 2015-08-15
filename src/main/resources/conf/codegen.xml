@@ -7,30 +7,16 @@
 
 <codegen>
     <!-- 工作目录 -->
-	<workspace>
-	    C:\workspace_current
-	</workspace>
+	<workspace>C:\workspace_current</workspace>
 	
-	<!-- 系统 -->
-	<system>
-	    ou
-	</system>
+	<!-- 所在业务逻辑代码，key代表生成的包名，内容代表的是系统所在业务业务逻辑工程名 -->
+	<system key="gl">biz-gl</system>
 	
 	<!-- 生成代码所在模块 -->
-	<module>
-	    system
-	</module>
+	<module>system</module>
 	
 	<files>
 	    <!-- key为数据库表名，override代表如果覆盖掉原来的文件，value指定需要生成的文件 -->
-	    <file key="days_user" override="true" value="controller,service,dao,entity,test,view">
-	    </file>
-	    
-<!-- 	    <file key="sys_role" override="true" value="controller,service,dao,entity,test,view"> -->
-<!-- 	    </file> -->
-	    
-<!-- 	    <file key="sys_resource" override="true" value="controller,service,dao,entity,test,view"> -->
-<!-- 	    </file> -->
-	    
+	    <file key="days_user" override="true" value="controller,service,dao,entity,test,view"></file>
 	</files>
 </codegen>

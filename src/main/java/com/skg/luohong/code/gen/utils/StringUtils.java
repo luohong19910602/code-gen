@@ -19,9 +19,15 @@ public class StringUtils {
 	 * 
 	 * */
 	public static String toJavaProperties(String columnName){
+		String javaName = null;
+		
 		//去掉末尾的_
-		String javaName = columnName.substring(0, columnName.length()-1);
-
+		if(columnName.endsWith("_")){
+			javaName = columnName.substring(0, columnName.length()-1);
+		}else{
+			javaName = columnName;
+		}
+		
 		//去掉_，并且将相邻的下一个字符换成大写
 		while(javaName.contains("_")){				
 			int index = javaName.indexOf("_");
@@ -29,7 +35,7 @@ public class StringUtils {
 			t = t.toUpperCase();
 			javaName = javaName.substring(0, index) + t + javaName.substring(index+2);
 		}
-		
+
 		return javaName;
 	}
 }

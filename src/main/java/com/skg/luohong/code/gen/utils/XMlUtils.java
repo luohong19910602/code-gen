@@ -334,6 +334,13 @@ public class XMlUtils {
 		return system.getTextTrim();
 	}
 	
+	public static String getSystemKey(){
+		Document doc = read("src/main/resources/conf/codegen.xml");
+		Element root = getRootElement(doc);
+		Element system = root.element("system");
+		return system.attributeValue("key");
+	}
+	
 	/**
 	 * 获取要生成表的信息
 	 * */
