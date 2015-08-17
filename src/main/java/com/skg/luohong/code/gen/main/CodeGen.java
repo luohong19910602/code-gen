@@ -1,7 +1,6 @@
 package com.skg.luohong.code.gen.main;
 
 import com.skg.luohong.code.gen.template.FreemarkGenCode;
-import com.skg.luohong.code.gen.template.IGenCode;
 
 /**
  * 代码生成器
@@ -19,7 +18,8 @@ public class CodeGen {
 	 * 
 	 * */
 	public static void main(String[] args){
-        IGenCode genCode = new FreemarkGenCode();
-        genCode.genCode();
+		FreemarkGenCode genCode = new FreemarkGenCode();
+        genCode.init();
+        genCode.invoke();
     }
 }
