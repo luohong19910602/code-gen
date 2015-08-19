@@ -66,9 +66,11 @@ public class EntityGenCode implements IGenCode {
 	 * @param override 是否覆盖
 	 * */
 	private void genEntity(String table, boolean override) {
+		
 		//实体名
 		String temp = StringUtils.toJavaProperties(table);
-		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Entity"; //先不做细节处理
+		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Tbl"; //先不做细节处理
+		
 		/**
 		 * 将E:\workspace中的'\'替换为'/'
 		 * */
@@ -107,7 +109,9 @@ public class EntityGenCode implements IGenCode {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		datas.put("date", sdf.format(new Date()));
 
-
+		//id字段的数据库类型
+		String idType = "";
+        
 		//属性
 		List<Field> fields = new ArrayList<Field>();
 		try {
@@ -119,7 +123,6 @@ public class EntityGenCode implements IGenCode {
 
 			//构建update的变量
 			StringBuilder updateBuilder = new StringBuilder();
-
 			if(columns != null){
 				for(int i=0; i<columns.size(); i++){
 					String column = columns.get(i);
@@ -127,10 +130,11 @@ public class EntityGenCode implements IGenCode {
 					String[] col = column.split(" ");  //将字段拆分
 					String name = col[0];
 					String type = col[1];
-
+                    
 
 					Field field = new Field(name, name, type);
-
+					
+					
 					if(i != columns.size() - 1){
 						nameBuilder.append("#{" + field.name + "}, ");
 						columnBuilder.append(name + ", ");
@@ -147,6 +151,18 @@ public class EntityGenCode implements IGenCode {
 							updateBuilder.append(name = "#{" + field.name + "}");
 						}
 					}
+					
+					/**
+					 * id字段的类型
+					 * 目前为数字或者字符串
+					 * */
+					if(field.name.equalsIgnoreCase("id")){
+						if(field.type.equalsIgnoreCase("String")){
+							idType = "String";
+						}else{
+							idType = "Integer";
+						}
+					}
 					fields.add(field);
 					//根据数据类型来构建实体
 				}
@@ -156,15 +172,37 @@ public class EntityGenCode implements IGenCode {
 			//处理update table set xxx=xxx where id_=#{id}
 			updateBuilder.append(" where id_ = #{id}");
 
+			if(!idType.equals("")){
+			    datas.put("idType", idType);
+			}else{
+				datas.put("idType", "String");
+			}
 			datas.put("fields", fields);
 			datas.put("names", nameBuilder.toString());
 			datas.put("columns", columnBuilder.toString());
 			datas.put("update", updateBuilder.toString());
-
-			//生成代码
+			
+			//生成Tbl代码
 			FreemarkUtils.createFile(datas, 
 					"src/main/resources/template/Entity.ftl", outputFileName);
-
+			
+			//po类名，去掉Tbl
+			String poName = entityName.substring(0, entityName.length() - 3) + "Po";
+			
+			datas.put("poName", poName);
+			
+			//根据配置信息，得到要生成Entity实体类的所在路径
+			String poOutputName = outputPath + poName + ".java";
+			File poOutputFile = new File(poOutputName);
+			if(poOutputFile.exists() && override){
+				System.out.println("delete file " + poOutputName);
+				poOutputFile.delete();
+			}
+			
+			//生成Po代码
+			FreemarkUtils.createFile(datas, 
+					"src/main/resources/template/Po.ftl", poOutputName);
+			
 			//已经完成了Entity的生成，接下来把mapper文件也生成
 			genMapper(datas);
 			genMapperClass(datas);
@@ -192,11 +230,11 @@ public class EntityGenCode implements IGenCode {
 		String entity = (String) datas.get("entity");
 		String mapperName = entity.replace("Entity", "") + "Mapper";
 		datas.put("mapperName", mapperName);
-
+        
 		datas.put("firstLowwerMapperName", (entity.charAt(0)+ "").toLowerCase() + entity.substring(1));
-
+        
 		outputFileName = outputPath + mapperName + ".java";
-
+        
 		//生成代码
 		FreemarkUtils.createFile(datas, 
 				"src/main/resources/template/MapperClass.ftl", outputFileName);

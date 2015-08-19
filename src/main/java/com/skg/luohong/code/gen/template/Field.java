@@ -28,14 +28,14 @@ public class Field{
 		}
 
 		this.name = StringUtils.toJavaProperties(name);
-		this.firstUpperName = name.substring(0, 1).toUpperCase() + name.substring(1);
-
+		this.firstUpperName = this.name.substring(0, 1).toUpperCase() + this.name.substring(1);
+        
 		this.column = column;
 		//数据类型
 		if(type.equalsIgnoreCase("VARCHAR")){				
 			this.type = "String";
 		}else if(type.contains("INT")){
-			this.type = "int";
+			this.type = "Integer";
 		}else if(type.contains("DATE")){
 			this.type = "Date";
 		}else{
@@ -45,7 +45,7 @@ public class Field{
 
 	@Override
 	public String toString(){
-		return name + " " + type;
+		return name + " " + type + " " + firstUpperName;
 	}
 
 	public String getName(){

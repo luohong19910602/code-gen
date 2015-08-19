@@ -43,6 +43,8 @@ public class FreemarkUtils {
             // 处理模版  
             template.process(data, out);  
             out.flush();  
+            
+            System.out.println("create file " + outFileName);
         } catch (Exception e) {  
         	e.printStackTrace();
         } finally{  

@@ -93,7 +93,6 @@ public class FreemarkGenCode {
 
 	/**
 	 * 根据源信息来生成代码
-	 * 
 	 * */
 	public void invoke(){
 		if(genCodeList != null){

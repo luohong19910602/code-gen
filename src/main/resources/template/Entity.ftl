@@ -1,6 +1,7 @@
 package com.skg.luohong.biz.${system}.${module}.entity;
 
 import java.util.Date;
+import com.skg.luohong.base.db.dao.AbstractPo;
 
 /**
  *
@@ -10,7 +11,7 @@ import java.util.Date;
  * @author 15013336884
  * @blog http://blog.csdn.net/u010469003
  * */
-public class ${entity}{
+public class ${entity} extends AbstractPo<${idType}>{
     
 <#list fields as field>
     private ${field.type} ${field.name};

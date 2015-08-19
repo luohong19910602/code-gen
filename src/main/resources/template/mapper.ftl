@@ -4,7 +4,7 @@
 
 <mapper namespace="com.skg.luohong.biz.${system}.${module}.entity.${mapperName}">
     
-    <resultMap id="${entity}" type="com.skg.luohong.biz.${system}.${module}.entity.${entity}">
+    <resultMap id="${entity}" type="com.skg.luohong.biz.${system}.${module}.entity.${poName}">
 		<#list fields as field>
 		    <result column="${field.column}" property="${field.name}"/>
 		</#list>
@@ -14,7 +14,7 @@
 		select * from ${table}
 	</select>
 	
-	<insert id="insert" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${entity}">
+	<insert id="insert" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${poName}">
 	    insert into users (
 		    ${columns}
 	    ) values (
@@ -23,7 +23,7 @@
 	</insert>
 	
 	<!-- 更新一条记录 -->  
-    <update id="update${entity}" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${entity}">  
+    <update id="update${entity}" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${poName}">  
         update ${table} set ${update} 
     </update> 
     

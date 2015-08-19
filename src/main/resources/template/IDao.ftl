@@ -1,16 +1,13 @@
 package com.skg.luohong.biz.${system}.${module}.dao;
 
-import java.util.List;
 
-import com.skg.luohong.biz.${system}.${module}.entity.${entity};
+import com.skg.luohong.biz.${system}.${module}.entity.${poName};
+import com.skg.luohong.base.db.dao.IDao;
 
 /**
  * @Author ${author}
  * @Date ${date}
  */
-public interface ${daoName} {
-	public void add(${entity} entity);
-    public void update(${entity} entity);
-    public void delete(String id);
-    public List<${entity}> findAll();
+public interface ${daoName} extends IDao<${idType}, ${poName}>{
+	
 }

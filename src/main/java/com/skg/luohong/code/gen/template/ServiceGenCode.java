@@ -25,15 +25,15 @@ public class ServiceGenCode implements IGenCode {
 	private String module;  //模块
 	private String table;
 	private boolean override;
-	
+
 	@Override
 	public void init(GenCodeInitParam param) {
 		this.workspace = param.getWorkspace();
 		this.system = param.getSystem();
 		this.module = param.getModule();
 		this.systemKey = param.getSystemKey();
-        this.table = param.getTable();
-        this.override = param.override();
+		this.table = param.getTable();
+		this.override = param.override();
 		if(this.workspace == null){
 			throw new IllegalArgumentException("workspace can't be null");
 		}
@@ -59,17 +59,17 @@ public class ServiceGenCode implements IGenCode {
 
 	@Override
 	public void genCode() {
-	    genService(table, override);
+		genService(table, override);
 	}
-    
+
 	private void genService(String table, boolean override) {
 		//实体名
 		String temp = StringUtils.toJavaProperties(table);
 		String serviceName = "I" + temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Service"; 
 		String daoName = "I" + temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Dao"; 
-		
-		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Entity";
-        
+
+		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Tbl";
+
 		/**
 		 * 将E:\workspace中的'\'替换为'/'
 		 * */
@@ -105,11 +105,17 @@ public class ServiceGenCode implements IGenCode {
 		datas.put("serviceName", serviceName);
 		datas.put("entity", entityName);
 		datas.put("daoName", daoName);
-        
+		//po类名，去掉Tbl
+		String poName = entityName.substring(0, entityName.length() - 3) + "Po";
+		datas.put("poName", poName);
+
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		datas.put("date", sdf.format(new Date()));
 
+
+		//id字段的数据库类型
+		String idType = "";
 
 		//属性
 		List<Field> fields = new ArrayList<Field>();
@@ -150,6 +156,18 @@ public class ServiceGenCode implements IGenCode {
 							updateBuilder.append(name = "#{" + field.name + "}");
 						}
 					}
+					
+					/**
+					 * id字段的类型
+					 * 目前为数字或者字符串
+					 * */
+					if(field.name.equalsIgnoreCase("id")){
+						if(field.type.equals("VARCHAR")){
+							idType = "String";
+						}else{
+							idType = "Integer";
+						}
+					}
 					fields.add(field);
 					//根据数据类型来构建实体
 				}
@@ -162,6 +180,11 @@ public class ServiceGenCode implements IGenCode {
 			datas.put("names", nameBuilder.toString());
 			datas.put("columns", columnBuilder.toString());
 			datas.put("update", updateBuilder.toString());
+			if(!idType.equals("")){
+			    datas.put("idType", idType);
+			}else{
+				datas.put("idType", "String");
+			}
 
 			//生成代码
 			FreemarkUtils.createFile(datas, 
@@ -178,7 +201,7 @@ public class ServiceGenCode implements IGenCode {
 
 		File outputPathDirectory = new File(outputPath);
 		String outputFileName = null;
-        
+
 		//文件夹已经存在
 		if(!outputPathDirectory.exists()){
 			System.out.println("mk dir " + outputPath);
@@ -195,6 +218,12 @@ public class ServiceGenCode implements IGenCode {
 
 		outputFileName = outputPath + serviceImplName + ".java";
 
+		File outputFile = new File(outputFileName);
+		if(outputFile.exists()){
+			System.out.println("delete file " + outputFileName);
+			outputFile.delete();
+		}
+		
 		//生成代码
 		FreemarkUtils.createFile(datas, 
 				"src/main/resources/template/ServiceImpl.ftl", outputFileName);
