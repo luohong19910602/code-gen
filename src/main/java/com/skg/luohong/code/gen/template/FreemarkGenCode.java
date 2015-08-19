@@ -3,7 +3,6 @@ package com.skg.luohong.code.gen.template;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.skg.luohong.code.gen.utils.FreemarkUtils;
 import com.skg.luohong.code.gen.utils.XMlUtils;
 import com.skg.luohong.code.gen.utils.XMlUtils.GenFile;
 
@@ -45,8 +44,6 @@ public class FreemarkGenCode {
 	 * 初始化Freemarker引擎，为代码生成做好准备，同时读取配置文件信息
 	 * */
 	public void init() {
-		FreemarkUtils.initFreeMarker("C:\\workspace_current\\code-gen");
-
 		genFiles = XMlUtils.genFiles();
 		genCodeList = new ArrayList<IGenCode>();
 
