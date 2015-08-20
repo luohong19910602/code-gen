@@ -153,7 +153,7 @@ public class DaoGenCode implements IGenCode {
 					 * 目前为数字或者字符串
 					 * */
 					if(field.name.equalsIgnoreCase("id")){
-						if(field.type.equals("VARCHAR")){
+						if(field.type.equals("String")){
 							idType = "String";
 						}else{
 							idType = "Integer";

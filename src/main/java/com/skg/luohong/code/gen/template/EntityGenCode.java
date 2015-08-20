@@ -152,6 +152,7 @@ public class EntityGenCode implements IGenCode {
 						}
 					}
 					
+					
 					/**
 					 * id字段的类型
 					 * 目前为数字或者字符串
