@@ -23,7 +23,6 @@ public class GenCodeInitParam {
     	return this;
     }
     
-    
     public GenCodeInitParam setTable(String table){
     	this.table = table;
     	return this;

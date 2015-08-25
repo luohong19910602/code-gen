@@ -10,8 +10,34 @@
 		</#list>
 	</resultMap>
 
+    <select id="get" resultMap="${entity}">
+		select * from ${table} where id_ =  ${r'${id}'}
+	</select>
+
 	<select id="findAll" resultMap="${entity}">
 		select * from ${table}
+		<where>
+		    <if test="whereSql != null">
+		        ${r'${whereSql}'}
+		    </if>
+		</where>
+		
+		<if test="orderSql != null">
+		    ${r'${orderSql}'}
+		</if>
+		
+		<if test="limitSql != null">
+		    ${r'${limitSql}'}
+		</if>
+	</select>
+	
+	<select id="countAll" resultType="int">
+	    	select * from ${table}
+		<where>
+		    <if test="whereSql != null">
+		        ${r'${whereSql}'}
+		    </if>
+		</where>
 	</select>
 	
 	<insert id="insert" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${poName}">
@@ -22,12 +48,12 @@
 	    )
 	</insert>
 	
+	<delete id="deleteById" statementType="PREPARED" timeout="20">
+        delete from ${table} where id_ =  ${r'${id}'}
+    </delete>
+	
 	<!-- 更新一条记录 -->  
     <update id="update${entity}" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${poName}">  
         update ${table} set ${update} 
     </update> 
-    
-    <delete id="deleteById" statementType="PREPARED" timeout="20">
-        delete from ${table} where id_ =  ${r'${id}'}
-    </delete>
 </mapper>

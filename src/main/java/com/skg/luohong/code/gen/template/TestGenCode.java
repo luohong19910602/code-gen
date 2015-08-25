@@ -74,7 +74,7 @@ public class TestGenCode implements IGenCode {
 		}
 
 		//根据配置信息，得到要生成Entity实体类的所在路径
-		String outputPath = workspace + "/biz-root/" + system + "/src/test/java/com/skg/luohong/biz/" + systemKey + "/" + module + "/entity/";
+		String outputPath = workspace + "/biz-root/" + system + "/src/test/java/com/skg/luohong/biz/" + systemKey + "/" + module + "/mapper/";
 		File outputPathDirectory = new File(outputPath);
 		String outputFileName = null;
 
@@ -164,19 +164,17 @@ public class TestGenCode implements IGenCode {
 			datas.put("poName", poName);
 			
 			//已经完成了Entity的生成，接下来把mapper文件也生成
-			genMapper(datas);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * 生成实体对应的Mapper.xml文件
-	 * 这个方法由genEntity()调用
+	 * copy测试文件
 	 * @param datas
 	 * */
 	private void genMapper(Map<String, Object> datas) {
-		String outputPath = workspace + "/biz-root/" + system + "/src/test/resources/com/skg/luohong/biz/" + systemKey + "/" + module + "/entity/";
+		String outputPath = workspace + "/biz-root/" + system + "/src/test/resources/com/skg/luohong/biz/" + systemKey + "/" + module + "/mapper/";
 		File outputPathDirectory = new File(outputPath);
 		String outputFileName = null;
 

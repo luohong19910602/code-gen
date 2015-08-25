@@ -213,7 +213,7 @@ public class DaoGenCode implements IGenCode {
 		datas.put("daoImplName", daoImplName);
 
 		String entity = (String) datas.get("entity");
-		String mapperName = entity.replace("Entity", "") + "Mapper";
+		String mapperName = entity.substring(0, entity.length() - 3) + "Mapper";
 		datas.put("mapperName", mapperName);
 
 		outputFileName = outputPath + daoImplName + ".java";

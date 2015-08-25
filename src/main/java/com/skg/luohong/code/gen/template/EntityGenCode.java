@@ -229,7 +229,7 @@ public class EntityGenCode implements IGenCode {
 		}
 
 		String entity = (String) datas.get("entity");
-		String mapperName = entity.replace("Entity", "") + "Mapper";
+		String mapperName = entity.substring(0, entity.length() - 3) + "Mapper";
 		datas.put("mapperName", mapperName);
         
 		datas.put("firstLowwerMapperName", (entity.charAt(0)+ "").toLowerCase() + entity.substring(1));
@@ -246,13 +246,14 @@ public class EntityGenCode implements IGenCode {
 	 * @param datas
 	 * */
 	private void genMapper(Map<String, Object> datas) {
-		String outputPath = workspace + "/biz-root/" + system + "/src/main/resources/com/skg/luohong/biz/" + systemKey + "/" + module + "/entity/";
+		String outputPath = workspace + "/biz-root/" + system + "/src/main/resources/com/skg/luohong/biz/" + systemKey + "/" + module + "/mapper/";
 		File outputPathDirectory = new File(outputPath);
 		String outputFileName = null;
 
 
 		String entity = (String) datas.get("entity");
-		String mapperName = entity.replace("Entity", "") + "Mapper";
+		
+		String mapperName = entity.substring(0, entity.length() - 3) + "Mapper";
 		datas.put("mapperName", mapperName);
 
 		//文件夹已经存在
@@ -260,7 +261,7 @@ public class EntityGenCode implements IGenCode {
 			System.out.println("mk dir " + outputPath);
 			outputPathDirectory.mkdirs();
 		}
-		outputFileName = outputPath + datas.get("entity") + ".mapper.xml";
+		outputFileName = outputPath + entity.substring(0, entity.length() - 3) + ".mapper.xml";
 
 		//生成代码
 		FreemarkUtils.createFile(datas, 

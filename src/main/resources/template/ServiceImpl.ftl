@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.skg.luohong.biz.${system}.${module}.dao.${daoName};
 import com.skg.luohong.biz.${system}.${module}.entity.${poName};
 import com.skg.luohong.biz.${system}.${module}.service.${serviceName};
+import com.skg.luohong.base.db.dao.SqlParam;
 
 @Service
 public class ${serviceImplName} implements ${serviceName} {
@@ -15,21 +16,38 @@ public class ${serviceImplName} implements ${serviceName} {
 	@Autowired
 	private ${daoName} dao;
 	
+	@Override
 	public void add(${poName} entity) {
 		dao.create(entity);
 	}
-
+    
+    @Override
 	public void update(${poName} entity) {
 		dao.update(entity);
 	}
-
+    
+    @Override
 	public void delete(${idType} id) {
 		dao.delete(id);
 	}
-
-	public List<${poName}> findAll() {
-		return dao.findAll();
+	
+	@Override
+	public List<${poName}> findAll(){
+	    return dao.findAll();
 	}
-   
+	
+	@Override
+    public List<${poName}> findAll(SqlParam params){
+        return dao.findAll(params);
+    }
     
+    @Override
+    public Integer countAll(){
+        return dao.countAll();
+    }
+    
+    @Override
+    public Integer countAll(SqlParam params){
+        return dao.countAll(params);
+    }
 }
