@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 代码生成器的配置文件，这里面主要配置如下几个信息： 
-    1.eclipse工作目录 
-    2.要生成代码的数据库表名 
-    3.生成代码所在模块 
-    4.要生成的文件，可选有：controller,service,dao,entity,view,test，这里面可选参数：是否覆盖存在文件 -->
 
+<!-- 代码生成器的配置文件，这里面主要配置如下几个信息： 1.eclipse工作目录 2.要生成代码的数据库表名 3.生成代码所在模块 4.要生成的文件，可选有：controller,service,dao,entity,view,test，这里面可选参数：是否覆盖存在文件 
+	在实际开发中，数据库的设计通常会使用某个前缀来作为标志符，这里面需要提供原信息，让程序自动去掉前缀 -->
 <codegen>
-    <!-- 工作目录 -->
-	<workspace>C:\workspace_current</workspace>
-	
+	<!-- 工作目录 -->
+	<workspace>E:\workspace_luohong_ou</workspace>
+
 	<!-- 所在业务逻辑代码，key代表生成的包名，内容代表的是系统所在业务业务逻辑工程名 -->
 	<system key="ou">biz-ou</system>
-	
+
 	<!-- 生成代码所在模块 -->
 	<module>system</module>
-	
+
+	<!-- 数据库前缀 -->
+	<prefix>skg_ou</prefix>
+
 	<files>
-	    <!-- key为数据库表名，override代表如果覆盖掉原来的文件，value指定需要生成的文件 -->
-	    <file key="days_user" override="true" value="controller,service,dao,entity,test,view"></file>
+		<!-- key为数据库表名，override代表如果覆盖掉原来的文件，value指定需要生成的文件， prefix指定该表的前缀，如果设置了该属性，那么程序将覆盖掉全局的prefix属性 -->
+		<file prefix="skg_ou_" key="skg_ou_party" override="true"
+			value="entity,dao,service,test"></file>
+		<file key="skg_ou_res" override="true" value="entity,dao,service,test"></file>
+		<file key="skg_ou_user" override="true" value="entity,dao,service,test"></file>
+		<file key="skg_ou_role" override="true" value="entity,dao,service,test"></file>
 	</files>
 </codegen>

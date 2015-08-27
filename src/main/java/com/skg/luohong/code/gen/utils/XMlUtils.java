@@ -340,6 +340,13 @@ public class XMlUtils {
 		return system.attributeValue("key");
 	}
 	
+	public static String getPrefix(){
+		Document doc = read("src/main/resources/conf/codegen.xml");
+		Element root = getRootElement(doc);
+		Element system = root.element("prefix");
+		return system.getTextTrim();
+	}
+	
 	/**
 	 * 获取要生成表的信息
 	 * */
@@ -352,13 +359,17 @@ public class XMlUtils {
 		Element files = root.element("files");
 		int size = files.elements().size();
 		for(int i=0; i<size; i++){
-			String key = ((Element)files.elements().get(i)).attributeValue("key");
-
-			Element file = ((Element)files.elements().get(i));
+			Element file = (Element) files.elements().get(i);
+			String key = file.attributeValue("key");
             boolean override = Boolean.valueOf((file.attributeValue("override")));
+            String prefix = file.attributeValue("prefix");
             List<String> options = Arrays.asList(file.attributeValue("value").split(","));
             
             GenFile genFile = new GenFile(key, override, options);
+            
+            if(prefix != null && prefix.trim().length() > 0){
+            	genFile.setPrefix(prefix);
+            }
             
             genFiles.add(genFile);
 		}
@@ -373,6 +384,7 @@ public class XMlUtils {
 		
 		public final String key;
         public final boolean override;
+        private String prefix;
 		public final List<String> genOptions;
 		
 		public GenFile(String key, boolean override, List<String> genOptions) {
@@ -380,18 +392,29 @@ public class XMlUtils {
 			this.override = override;
 			this.genOptions = genOptions;
 		}
+        
+		public String getPrefix() {
+			return prefix;
+		}
+
+		public void setPrefix(String prefix) {
+			this.prefix = prefix;
+		}
 
 		@Override
 		public String toString() {
-			return "GenFile [key=" + key + ", override=" + override
+			return "GenFile [key=" + key  + ", override=" + override  + ", prefix=" + prefix 
 					+ ", genOptions=" + genOptions + "]";
 		}
 	}
 	
-
+    
 	public static void main(String[] args) {
-		System.out.println(getModule());
 		System.out.println(getWorkSpace());
+		System.out.println(getModule());
+		System.out.println(getSystem());
+		System.out.println(getSystemKey());
+		System.out.println(getPrefix());
 		System.out.println(genFiles());
 	}
 
