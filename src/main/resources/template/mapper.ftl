@@ -32,7 +32,7 @@
 	</select>
 	
 	<select id="countAll" resultType="int">
-	    	select * from ${table}
+	    	select count(*) from ${table}
 		<where>
 		    <if test="whereSql != null">
 		        ${r'${whereSql}'}

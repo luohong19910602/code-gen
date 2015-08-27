@@ -1,7 +1,6 @@
 package com.skg.luohong.code.gen.template;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +12,13 @@ import com.skg.luohong.code.gen.utils.FreemarkUtils;
 import com.skg.luohong.code.gen.utils.JdbcUtils;
 import com.skg.luohong.code.gen.utils.StringUtils;
 
+/**
+ * 单元测试类代码生成器
+ * 这里面只生成service层的代码，dao层不需要生成
+ * 
+ * @author 骆宏 15013336884 846705189@qq.com
+ * @date 2015-08-27 19:29
+ * */
 public class TestGenCode implements IGenCode {
 
 	private String workspace;  //工作目录
@@ -50,7 +56,6 @@ public class TestGenCode implements IGenCode {
 		if(!new File(workspace).exists()){
 			throw new IllegalArgumentException("workspace must be exists");
 		}
-
 	}
 
 	@Override
@@ -65,7 +70,9 @@ public class TestGenCode implements IGenCode {
 	private void genTest(String table, boolean override) {
 		//实体名
 		String temp = StringUtils.toJavaProperties(table);
-		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Tbl"; //先不做细节处理
+
+		String testName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Test"; 
+
 		/**
 		 * 将E:\workspace中的'\'替换为'/'
 		 * */
@@ -74,19 +81,21 @@ public class TestGenCode implements IGenCode {
 		}
 
 		//根据配置信息，得到要生成Entity实体类的所在路径
-		String outputPath = workspace + "/biz-root/" + system + "/src/test/java/com/skg/luohong/biz/" + systemKey + "/" + module + "/mapper/";
+		String outputPath = workspace + "/biz-root/" + system + "/src/test/java/com/skg/luohong/biz/" + systemKey + "/" + module + "/";
+
 		File outputPathDirectory = new File(outputPath);
 		String outputFileName = null;
 
 		//文件夹已经存在
-//		if(!outputPathDirectory.exists()){
-//			System.out.println("mk dir " + outputPath);
-//			outputPathDirectory.mkdirs();
-//		}
-		outputFileName = outputPath + entityName + ".java";
+		if(!outputPathDirectory.exists()){
+			System.out.println("mk dir " + outputPath);
+			outputPathDirectory.mkdirs();
+		}
+
+		outputFileName = outputPath + testName + ".java";
 
 		File outputFile = new File(outputFileName);
-
+		
 		//删除文件
 		if(override && outputFile.exists()){
 			System.out.println("delete file " + outputFileName);
@@ -98,106 +107,16 @@ public class TestGenCode implements IGenCode {
 		datas.put("system", systemKey);
 		datas.put("module", module);
 		datas.put("author", "骆宏");
-		datas.put("entity", entityName);
-		datas.put("table", table);
-
+		datas.put("testName", testName);
+		String serviceName = "I" + testName.substring(0, testName.length() - 4) + "Service";
+		datas.put("serviceName", serviceName);
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		datas.put("date", sdf.format(new Date()));
 
-
-		//属性
-		List<Field> fields = new ArrayList<Field>();
-		try {
-			List<String> columns = JdbcUtils.columns(table);
-
-			//构建input的变量，这里的内容就不放在freemarker处理了
-			StringBuilder nameBuilder = new StringBuilder();
-			StringBuilder columnBuilder = new StringBuilder();
-
-			//构建update的变量
-			StringBuilder updateBuilder = new StringBuilder();
-
-			if(columns != null){
-				for(int i=0; i<columns.size(); i++){
-					String column = columns.get(i);
-
-					String[] col = column.split(" ");  //将字段拆分
-					String name = col[0];
-					String type = col[1];
-
-
-					Field field = new Field(name, name, type);
-
-					if(i != columns.size() - 1){
-						nameBuilder.append("#{" + field.name + "}, ");
-						columnBuilder.append(name + ", ");
-
-						//update部分id值不需要更新
-						if(!name.equalsIgnoreCase("id_")){
-							updateBuilder.append(name = "#{" + field.name + "}, ");
-						}
-					}else{
-						nameBuilder.append("#{" + field.name + "}");
-						columnBuilder.append(name);
-
-						if(!name.equalsIgnoreCase("id_")){
-							updateBuilder.append(name = "#{" + field.name + "}");
-						}
-					}
-					fields.add(field);
-					//根据数据类型来构建实体
-				}
-
-			}
-
-			//处理update table set xxx=xxx where id_=#{id}
-			updateBuilder.append(" where id_ = #{id}");
-
-			datas.put("fields", fields);
-			datas.put("names", nameBuilder.toString());
-			datas.put("columns", columnBuilder.toString());
-			datas.put("update", updateBuilder.toString());
-			
-			//po类名，去掉Tbl
-			String poName = entityName.substring(0, entityName.length() - 3) + "Po";
-			
-			datas.put("poName", poName);
-			
-			//已经完成了Entity的生成，接下来把mapper文件也生成
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * copy测试文件
-	 * @param datas
-	 * */
-	private void genMapper(Map<String, Object> datas) {
-		String outputPath = workspace + "/biz-root/" + system + "/src/test/resources/com/skg/luohong/biz/" + systemKey + "/" + module + "/mapper/";
-		File outputPathDirectory = new File(outputPath);
-		String outputFileName = null;
-
-
-		String entity = (String) datas.get("entity");
-		String mapperName = entity.replace("Entity", "") + "Mapper";
-		datas.put("mapperName", mapperName);
-
-		//文件夹已经存在
-		if(!outputPathDirectory.exists()){
-			System.out.println("mk dir " + outputPath);
-			outputPathDirectory.mkdirs();
-		}
-		
-		outputFileName = outputPath + datas.get("entity") + ".mapper.xml";
-        File outputFile = new File(outputFileName);
-        if(outputFile.exists() && override){
-        	System.out.println("delete file " + outputFileName);
-        	outputFile.delete();
-        }
-        
-        //生成代码
+		//生成代码
 		FreemarkUtils.createFile(datas, 
-				"src/main/resources/template/mapper.ftl", outputFileName);
+				"src/main/resources/template/test.ftl", outputFileName);
+
 	}
 }

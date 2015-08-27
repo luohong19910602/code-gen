@@ -2,6 +2,12 @@ package com.skg.luohong.code.gen.template;
 
 import java.io.File;
 
+/**
+ * 生成界面代码生成器
+ * 
+ * @author 骆宏 846705189@qq.com 15013336884
+ * @date 2015-08-27 19:49 
+ * */
 public class ViewGenCode implements IGenCode {
 
 	private String workspace;  //工作目录
