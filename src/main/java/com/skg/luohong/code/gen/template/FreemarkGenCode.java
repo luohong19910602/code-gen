@@ -46,14 +46,32 @@ public class FreemarkGenCode {
 	public void init() {
 		genFiles = XMlUtils.genFiles();
 		genCodeList = new ArrayList<IGenCode>();
-
-		param = new GenCodeInitParam();
-		param.setWorkspace(XMlUtils.getWorkSpace()).setSystem(XMlUtils.getSystem()).setSystemKey(XMlUtils.getSystemKey()).setModule(XMlUtils.getModule());
+        
+		
 
 		for(GenFile genFile: genFiles){
-			param = param.clone();  //copy一份，然后修改table，override属性
-
-			param.setTable(genFile.key).setOverride(genFile.override);
+			param = new GenCodeInitParam();
+			param.setWorkspace(XMlUtils.getWorkSpace())
+			     .setSystem(XMlUtils.getSystem())
+			     .setSystemKey(XMlUtils.getSystemKey())
+			     .setModule(XMlUtils.getModule())
+			     .setPrefix(XMlUtils.getPrefix());
+			
+			param.setOverride(genFile.override);
+			
+			if(genFile.getPrefix() != null){
+				param.setPrefix(genFile.getPrefix());
+			}
+			
+			//将表的前缀删除掉
+			if(param.getPrefix() != null && genFile.key.startsWith(param.getPrefix())){	
+				param.setTable(genFile.key.substring(param.getPrefix().length()));
+			}else if(param.getPrefix() != null && !genFile.key.startsWith(param.getPrefix())){
+				throw new IllegalArgumentException(param.getTable() + " prefix is not start with " + param.getPrefix());
+			}else{  //没有设置表前缀，使用全局表前缀
+				param.setTable(genFile.key);
+			}
+			
 
 			IGenCode genCode = null;
 

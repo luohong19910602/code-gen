@@ -6,12 +6,13 @@ package com.skg.luohong.code.gen.template;
  * @date 2015-08-17 23:16
  * */
 public class GenCodeInitParam {
-    private String workspace;
-    private String system;
-    private String module;
-    private String table;
-    private String systemKey;
-    private boolean override;
+    private String workspace;  //工作目录
+    private String system;  //系统
+    private String systemKey;  //系统的key
+    private String module;  //模块
+    private String table;  //表名
+    private String prefix;
+    private boolean override;   //是否override掉存在的文件
     
     public GenCodeInitParam setWorkspace(String workspace){
     	this.workspace = workspace;
@@ -25,6 +26,11 @@ public class GenCodeInitParam {
     
     public GenCodeInitParam setTable(String table){
     	this.table = table;
+    	return this;
+    }
+    
+    public GenCodeInitParam setPrefix(String prefix){
+    	this.prefix = prefix;
     	return this;
     }
     
@@ -67,8 +73,12 @@ public class GenCodeInitParam {
 		return table;
 	}
 	
+	public String getPrefix(){
+		return prefix;
+	}
+	
 	@Override
 	public GenCodeInitParam clone(){
-		return new GenCodeInitParam().setModule(module).setWorkspace(workspace).setSystemKey(systemKey).setSystem(system);
+		return new GenCodeInitParam().setModule(module).setWorkspace(workspace).setSystemKey(systemKey).setSystem(system).setPrefix(prefix).setTable(table);
 	}
 }

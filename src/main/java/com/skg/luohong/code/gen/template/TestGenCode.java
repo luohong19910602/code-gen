@@ -2,14 +2,11 @@ package com.skg.luohong.code.gen.template;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.skg.luohong.code.gen.utils.FreemarkUtils;
-import com.skg.luohong.code.gen.utils.JdbcUtils;
 import com.skg.luohong.code.gen.utils.StringUtils;
 
 /**

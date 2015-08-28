@@ -18,7 +18,7 @@ public class EntityGenCode implements IGenCode {
 	private String system;  //系统
 	private String systemKey;  //系统的简称
 	private String module;  //模块
-	private String table;
+	private String table;  //表名
 	private boolean override;
 	
 	@Override
