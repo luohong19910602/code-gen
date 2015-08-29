@@ -11,7 +11,7 @@ public class GenCodeInitParam {
     private String systemKey;  //系统的key
     private String module;  //模块
     private String table;  //表名
-    private String prefix;
+    private String prefix = "";  //数据库前缀
     private boolean override;   //是否override掉存在的文件
     
     public GenCodeInitParam setWorkspace(String workspace){

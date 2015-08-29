@@ -110,7 +110,7 @@ public class TestGenCode implements IGenCode {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		datas.put("date", sdf.format(new Date()));
-
+        
 		//生成代码
 		FreemarkUtils.createFile(datas, 
 				"src/main/resources/template/test.ftl", outputFileName);

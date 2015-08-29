@@ -19,7 +19,8 @@ public class EntityGenCode implements IGenCode {
 	private String systemKey;  //系统的简称
 	private String module;  //模块
 	private String table;  //表名
-	private boolean override;
+	private String prefix;  //表名前缀
+	private boolean override;   //是否override存在文件
 	
 	@Override
 	public void init(GenCodeInitParam param) {
@@ -29,6 +30,8 @@ public class EntityGenCode implements IGenCode {
 		this.systemKey = param.getSystemKey();
         this.table = param.getTable();
         this.override = param.override();
+        this.prefix = param.getPrefix();
+        
 		if(this.workspace == null){
 			throw new IllegalArgumentException("workspace can't be null");
 		}
@@ -49,7 +52,6 @@ public class EntityGenCode implements IGenCode {
 		if(!new File(workspace).exists()){
 			throw new IllegalArgumentException("workspace must be exists");
 		}
-		
 	}
 
 
@@ -66,7 +68,6 @@ public class EntityGenCode implements IGenCode {
 	 * @param override 是否覆盖
 	 * */
 	private void genEntity(String table, boolean override) {
-		
 		//实体名
 		String temp = StringUtils.toJavaProperties(table);
 		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Tbl"; //先不做细节处理
@@ -104,7 +105,7 @@ public class EntityGenCode implements IGenCode {
 		datas.put("module", module);
 		datas.put("author", "骆宏");
 		datas.put("entity", entityName);
-		datas.put("table", table);
+		datas.put("table", prefix + table);  //将前缀加入
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		datas.put("date", sdf.format(new Date()));
@@ -115,7 +116,7 @@ public class EntityGenCode implements IGenCode {
 		//属性
 		List<Field> fields = new ArrayList<Field>();
 		try {
-			List<String> columns = JdbcUtils.columns(table);
+			List<String> columns = JdbcUtils.columns(prefix + table);
 
 			//构建input的变量，这里的内容就不放在freemarker处理了
 			StringBuilder nameBuilder = new StringBuilder();
@@ -131,9 +132,7 @@ public class EntityGenCode implements IGenCode {
 					String name = col[0];
 					String type = col[1];
                     
-
 					Field field = new Field(name, name, type);
-					
 					
 					if(i != columns.size() - 1){
 						nameBuilder.append("#{" + field.name + "}, ");
@@ -152,16 +151,13 @@ public class EntityGenCode implements IGenCode {
 						}
 					}
 					
-					
-					/**
-					 * id字段的类型
-					 * 目前为数字或者字符串
-					 * */
 					if(field.name.equalsIgnoreCase("id")){
 						if(field.type.equalsIgnoreCase("String")){
 							idType = "String";
-						}else{
+						}else if(field.type.equalsIgnoreCase("Integer")){
 							idType = "Integer";
+						}else{
+							idType = "String";
 						}
 					}
 					fields.add(field);
@@ -172,7 +168,7 @@ public class EntityGenCode implements IGenCode {
 
 			//处理update table set xxx=xxx where id_=#{id}
 			updateBuilder.append(" where id_ = #{id}");
-
+			
 			if(!idType.equals("")){
 			    datas.put("idType", idType);
 			}else{

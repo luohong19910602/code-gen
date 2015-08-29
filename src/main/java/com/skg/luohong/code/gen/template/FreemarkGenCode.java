@@ -10,16 +10,14 @@ import com.skg.luohong.code.gen.utils.XMlUtils.GenFile;
  * 这里面是策略模式的调用中心，客户端直接调用该类来完成代码生成的功能
  * 该类是策略模式中的Invoker
  * 
+ * 
  * @author 骆宏
  * @date 2015-08-11 21:49
  * */
 public class FreemarkGenCode {
 	private List<XMlUtils.GenFile> genFiles;
-
 	private List<IGenCode> genCodeList;
-
-	private GenCodeInitParam param;
-
+    
 	/**
 	 * 注册代码生成器
 	 * @param genCode 代码生成器
@@ -47,10 +45,8 @@ public class FreemarkGenCode {
 		genFiles = XMlUtils.genFiles();
 		genCodeList = new ArrayList<IGenCode>();
         
-		
-
 		for(GenFile genFile: genFiles){
-			param = new GenCodeInitParam();
+			GenCodeInitParam param = new GenCodeInitParam();
 			param.setWorkspace(XMlUtils.getWorkSpace())
 			     .setSystem(XMlUtils.getSystem())
 			     .setSystemKey(XMlUtils.getSystemKey())
@@ -58,12 +54,11 @@ public class FreemarkGenCode {
 			     .setPrefix(XMlUtils.getPrefix());
 			
 			param.setOverride(genFile.override);
-			
-			if(genFile.getPrefix() != null){
+		
+			if(genFile.getPrefix() != null && genFile.getPrefix().length() > 0){
 				param.setPrefix(genFile.getPrefix());
 			}
 			
-			//将表的前缀删除掉
 			if(param.getPrefix() != null && genFile.key.startsWith(param.getPrefix())){	
 				param.setTable(genFile.key.substring(param.getPrefix().length()));
 			}else if(param.getPrefix() != null && !genFile.key.startsWith(param.getPrefix())){
@@ -72,15 +67,13 @@ public class FreemarkGenCode {
 				param.setTable(genFile.key);
 			}
 			
-
+			
 			IGenCode genCode = null;
-
 			if(genFile.genOptions.contains("controller")){
 				genCode = new ControllerGenCode();
 				genCode.init(param);
 				genCodeList.add(genCode);
 			}
-
 			if(genFile.genOptions.contains("service")){
 				genCode = new ServiceGenCode();
 				genCode.init(param);
@@ -115,6 +108,7 @@ public class FreemarkGenCode {
 	public void invoke(){
 		if(genCodeList != null){
 			for(IGenCode genCode: genCodeList){
+				
 				genCode.genCode();
 			}
 		}

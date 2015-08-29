@@ -3,7 +3,6 @@ package com.skg.luohong.code.gen.template;
 import java.io.File;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,8 @@ public class DaoGenCode implements IGenCode {
 	private String system;  //系统
 	private String systemKey;  //系统的简称
 	private String module;  //模块
-	private String table;
+	private String table;  
+	private String prefix; 
 	private boolean override;
 
 	@Override
@@ -30,6 +30,7 @@ public class DaoGenCode implements IGenCode {
 		this.systemKey = param.getSystemKey();
 		this.table = param.getTable();
 		this.override = param.override();
+		this.prefix = param.getPrefix();
 		if(this.workspace == null){
 			throw new IllegalArgumentException("workspace can't be null");
 		}
@@ -59,14 +60,11 @@ public class DaoGenCode implements IGenCode {
 	}
 
 	private void genDao(String table, boolean override) {
-		//实体名
 		String temp = StringUtils.toJavaProperties(table);
+
 		String daoName = "I" + temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Dao"; 
 		String entityName = temp.substring(0, 1).toUpperCase() + temp.substring(1) + "Tbl";
 
-		/**
-		 * 将E:\workspace中的'\'替换为'/'
-		 * */
 		if(workspace.contains("\\")){
 			workspace = workspace.replaceAll("\\\\", "/");
 		}
@@ -98,99 +96,47 @@ public class DaoGenCode implements IGenCode {
 		datas.put("author", "骆宏");
 		datas.put("daoName", daoName);
 		datas.put("entity", entityName);
-
-
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		datas.put("date", sdf.format(new Date()));
 
-
-		//id字段的数据库类型
-		String idType = "";
-
-
-		//属性
-		List<Field> fields = new ArrayList<Field>();
+		List<String> columns = null;
 		try {
-			List<String> columns = JdbcUtils.columns(table);
-
-			//构建input的变量，这里的内容就不放在freemarker处理了
-			StringBuilder nameBuilder = new StringBuilder();
-			StringBuilder columnBuilder = new StringBuilder();
-
-			//构建update的变量
-			StringBuilder updateBuilder = new StringBuilder();
-
-			if(columns != null){
-				for(int i=0; i<columns.size(); i++){
-					String column = columns.get(i);
-
-					String[] col = column.split(" ");  //将字段拆分
-					String name = col[0];
-					String type = col[1];
-
-
-					Field field = new Field(name, name, type);
-
-					if(i != columns.size() - 1){
-						nameBuilder.append("#{" + field.name + "}, ");
-						columnBuilder.append(name + ", ");
-
-						//update部分id值不需要更新
-						if(!name.equalsIgnoreCase("id_")){
-							updateBuilder.append(name = "#{" + field.name + "}, ");
-						}
-					}else{
-						nameBuilder.append("#{" + field.name + "}");
-						columnBuilder.append(name);
-
-						if(!name.equalsIgnoreCase("id_")){
-							updateBuilder.append(name = "#{" + field.name + "}");
-						}
-					}
-					
-					/**
-					 * id字段的类型
-					 * 目前为数字或者字符串
-					 * */
-					if(field.name.equalsIgnoreCase("id")){
-						if(field.type.equals("String")){
-							idType = "String";
-						}else{
-							idType = "Integer";
-						}
-					}
-					fields.add(field);
-					//根据数据类型来构建实体
-				}
-			}
-
-			//处理update table set xxx=xxx where id_=#{id}
-			updateBuilder.append(" where id_ = #{id}");
-
-			datas.put("fields", fields);
-			datas.put("names", nameBuilder.toString());
-			datas.put("columns", columnBuilder.toString());
-			datas.put("update", updateBuilder.toString());
-
-			if(!idType.equals("")){
-			    datas.put("idType", idType);
-			}else{
-				datas.put("idType", "String");
-			}
-			
-			//po类名，去掉Tbl
-			String poName = entityName.substring(0, entityName.length() - 3) + "Po";
-			
-			datas.put("poName", poName);
-			
-			//生成代码
-			FreemarkUtils.createFile(datas, 
-					"src/main/resources/template/IDao.ftl", outputFileName);
-
-			genDaoImpl(datas);
-		}catch(SQLException e) {
+			columns = JdbcUtils.columns(prefix + table);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		String idType = "";
+		for(int i=0; i<columns.size(); i++){
+			String column = columns.get(i);
+			String[] col = column.split(" ");
+			String name = col[0];
+			String type = col[1];
+			Field field = new Field(name, name, type);
+
+			/**
+			 * id字段的类型
+			 * 目前为数字或者字符串
+			 * */
+			if(field.name.equalsIgnoreCase("id")){
+				if(field.type.equalsIgnoreCase("String")){
+					idType = "String";
+				}else if(field.type.equalsIgnoreCase("Integer")){
+					idType = "Integer";
+				}else{
+					idType = "String";
+				}
+			}
+		}
+
+		datas.put("idType", idType); 
+		//po类名，去掉Tbl
+		String poName = entityName.substring(0, entityName.length() - 3) + "Po";
+		datas.put("poName", poName);
+
+		FreemarkUtils.createFile(datas, 
+				"src/main/resources/template/IDao.ftl", outputFileName);
+
+		genDaoImpl(datas);
 	}
 
 	/**
@@ -217,13 +163,13 @@ public class DaoGenCode implements IGenCode {
 		datas.put("mapperName", mapperName);
 
 		outputFileName = outputPath + daoImplName + ".java";
-        
+
 		File outputFile = new File(outputFileName);
 		if(outputFile.exists() && override){
 			System.out.println("delete file " + outputFileName);
 			outputFile.delete();
 		}
-		
+
 		//生成代码
 		FreemarkUtils.createFile(datas, 
 				"src/main/resources/template/DaoImpl.ftl", outputFileName);

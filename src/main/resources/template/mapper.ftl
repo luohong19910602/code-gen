@@ -40,8 +40,8 @@
 		</where>
 	</select>
 	
-	<insert id="insert" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${poName}">
-	    insert into users (
+	<insert id="create" parameterType="com.skg.luohong.biz.${system}.${module}.entity.${poName}">
+	    insert into ${table} (
 		    ${columns}
 	    ) values (
 	        ${names}

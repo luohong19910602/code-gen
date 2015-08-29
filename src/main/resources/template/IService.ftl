@@ -6,9 +6,13 @@ import com.skg.luohong.biz.${system}.${module}.entity.${poName};
 import com.skg.luohong.base.db.dao.SqlParam;
 
 /**
- * @Author ${author}
- * @Date ${date}
- */
+ *
+ * @author ${author}
+ * @date ${date}
+ * @author 846705189@qq.com
+ * @author 15013336884
+ * @blog http://blog.csdn.net/u010469003
+ * */
 public interface ${serviceName} {
 	public void add(${poName} entity);
     public void update(${poName} entity);
