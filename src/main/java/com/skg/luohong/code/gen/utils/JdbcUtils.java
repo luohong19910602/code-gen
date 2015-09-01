@@ -137,7 +137,6 @@ public class JdbcUtils {
 	 * List里面的内容为table的字段信息，结构如下所示
 	 * 字段名 + " " + 字段类型 + " " + 字段类型大小 + " " + 精确度 + " " + 是否为空（如果为空，那么值为0；否则为1）
 	 * 
-	 * 
 	 * @param tableName
 	 * @throws SQLException 
 	 * */
@@ -167,6 +166,9 @@ public class JdbcUtils {
 	}
 
 	public static void main(String[] args) throws SQLException {
-		System.out.println(columns("sys_user"));
+		List<String> cols = columns("crm_days_user");
+		for(String col: cols){
+			System.out.println(col);
+		}
 	}
 }

@@ -160,10 +160,15 @@ public class EntityGenCode implements IGenCode {
 							idType = "String";
 						}
 					}
+					
+					//这几个字段在AbstractPo中维护
+					if(field.name.equals("id") || field.name.equals("createBy") || field.name.equals("createTime") || field.name.equals("updateBy") || field.name.equals("updateTime")){
+						continue;
+					}
+					
 					fields.add(field);
 					//根据数据类型来构建实体
 				}
-
 			}
 
 			//处理update table set xxx=xxx where id_=#{id}
